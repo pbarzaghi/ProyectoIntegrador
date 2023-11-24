@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 
 @Entity
-@Table(name="tipoUsuario")
+@Table(name="tipousuario")
 /**
  @author pabloBarzaghi
  */
@@ -16,4 +16,6 @@ public class TipoUsuario extends BaseEntity{
 
     @Column(name = "tipo")
     private String tipo;
+
+
 }

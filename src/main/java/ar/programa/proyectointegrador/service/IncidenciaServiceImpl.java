@@ -15,32 +15,32 @@ public class IncidenciaServiceImpl implements IncidenciaService{
     @Autowired
     IncidenciaReprository incidenciaReprository;
     @Override
-    public List<Incidencia> findAll() throws Exception {
+    public List<Incidencia> findAll()   {
         return incidenciaReprository.findAll();
     }
 
     @Override
-    public Incidencia save(Incidencia incidencia) throws Exception {
+    public Incidencia save(Incidencia incidencia)  {
         return incidenciaReprository.save(incidencia);
     }
 
     @Override
-    public Incidencia update(Incidencia incidencia) throws Exception {
+    public Incidencia update(Incidencia incidencia)   {
         return incidenciaReprository.save(incidencia);
     }
 
     @Override
-    public Optional<Incidencia> findById(Integer integer) throws Exception {
+    public Optional<Incidencia> findById(Integer integer)  {
         return incidenciaReprository.findById(integer );
     }
 
     @Override
-    public void deleteById(Integer integer) throws Exception {
+    public void deleteById(Integer integer)  {
         incidenciaReprository.deleteById(integer);
     }
 
     @Override
-    public void deleteAll() throws Exception {
+    public void deleteAll()  {
         incidenciaReprository.deleteAll();
     }
 }

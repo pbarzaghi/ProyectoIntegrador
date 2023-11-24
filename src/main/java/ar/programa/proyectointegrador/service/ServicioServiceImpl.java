@@ -15,32 +15,32 @@ public class ServicioServiceImpl implements ServicioService {
     @Autowired
     ServicioRepository servicioRepository;
     @Override
-    public List<Servicio> findAll() throws Exception {
+    public List<Servicio> findAll()  {
         return servicioRepository.findAll();
     }
 
     @Override
-    public Servicio save(Servicio servicio) throws Exception {
+    public Servicio save(Servicio servicio)  {
         return servicioRepository.save(servicio);
     }
 
     @Override
-    public Servicio update(Servicio servicio) throws Exception {
+    public Servicio update(Servicio servicio)  {
         return servicioRepository.save(servicio);
     }
 
     @Override
-    public Optional<Servicio> findById(Integer integer) throws Exception {
+    public Optional<Servicio> findById(Integer integer)  {
         return servicioRepository.findById(integer);
     }
 
     @Override
-    public void deleteById(Integer integer) throws Exception {
+    public void deleteById(Integer integer)  {
         servicioRepository.deleteById(integer);
     }
 
     @Override
-    public void deleteAll() throws Exception {
+    public void deleteAll()  {
         servicioRepository.deleteAll();
     }
 }

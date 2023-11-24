@@ -15,32 +15,32 @@ public class IncidenciaDetalleServiceImpl implements IncidenciaDetalleService{
     @Autowired
     IncidenciaDetalleRepository incidenciaDetalleRepository;
     @Override
-    public List<IncidenciaDetalle> findAll() throws Exception {
+    public List<IncidenciaDetalle> findAll() {
         return incidenciaDetalleRepository.findAll();
     }
 
     @Override
-    public IncidenciaDetalle save(IncidenciaDetalle incidenciaDetalle) throws Exception {
+    public IncidenciaDetalle save(IncidenciaDetalle incidenciaDetalle)  {
         return incidenciaDetalleRepository.save(incidenciaDetalle);
     }
 
     @Override
-    public IncidenciaDetalle update(IncidenciaDetalle incidenciaDetalle) throws Exception {
+    public IncidenciaDetalle update(IncidenciaDetalle incidenciaDetalle) {
         return incidenciaDetalleRepository.save(incidenciaDetalle);
     }
 
     @Override
-    public Optional<IncidenciaDetalle> findById(Integer integer) throws Exception {
+    public Optional<IncidenciaDetalle> findById(Integer integer)  {
         return incidenciaDetalleRepository.findById(integer);
     }
 
     @Override
-    public void deleteById(Integer integer) throws Exception {
+    public void deleteById(Integer integer)  {
         incidenciaDetalleRepository.deleteById(integer);
     }
 
     @Override
-    public void deleteAll() throws Exception {
+    public void deleteAll()  {
         incidenciaDetalleRepository.deleteAll();
     }
 }

@@ -20,4 +20,9 @@ public class Especialidad extends BaseEntity{
 
     @ManyToMany(mappedBy = "especialidades")
     List<TipoProblema> tipoProblemas;
+
+
+    @ManyToMany(mappedBy = "especialidad")
+    List<Tecnico> tecnicos;
+
 }

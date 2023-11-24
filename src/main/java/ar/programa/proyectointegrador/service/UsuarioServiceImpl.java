@@ -20,36 +20,36 @@ public class UsuarioServiceImpl implements UsuarioService{
     UsuarioRepository usuarioRepository;
     @Transactional(readOnly = true)
     @Override
-    public List<Usuario> findAll() throws Exception {
+    public List<Usuario> findAll()  {
         return usuarioRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
-    public Usuario save(Usuario usuario) throws Exception {
+    public Usuario save(Usuario usuario){
+        return usuarioRepository.save(usuario);
+    }
+
+    @Transactional
+    @Override
+    public Usuario update(Usuario usuario)  {
         return usuarioRepository.save(usuario);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Usuario update(Usuario usuario) throws Exception {
-        return usuarioRepository.save(usuario);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Optional<Usuario> findById(Integer integer) throws Exception {
+    public Optional<Usuario> findById(Integer integer)  {
         return usuarioRepository.findById(integer);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
-    public void deleteById(Integer integer) throws Exception {
+    public void deleteById(Integer integer)  {
         usuarioRepository.deleteById(integer);
     }
 
-    @Transactional(readOnly = true)
-    public void deleteAll() throws Exception {
+    @Transactional
+    public void deleteAll()   {
         usuarioRepository.deleteAll();
     }
 }

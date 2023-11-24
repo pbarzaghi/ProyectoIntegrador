@@ -22,9 +22,9 @@ public class Usuario extends BaseEntity{
     @Column(name="password")
     private String pass;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "tipoUsuario_id",referencedColumnName = "id")
-    private TipoUsuario tipoUsuario;
+   // @ManyToOne
+    //@JoinColumn(name = "tipousuario_id",referencedColumnName = "id" ,nullable=false)
+    private TipoUsuario tipousuario_id;
 
 
 }

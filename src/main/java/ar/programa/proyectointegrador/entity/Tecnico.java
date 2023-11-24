@@ -26,5 +26,12 @@ public class Tecnico extends BaseEntity{
     @OneToMany
     List<Incidencia> incidencias;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "tecnico_especialidad",
+            joinColumns = @JoinColumn(name = "tecnico_id"),
+            inverseJoinColumns = @JoinColumn(name = "especialidad_id"))
+    List<Especialidad> especialidad;
+
 
 }
