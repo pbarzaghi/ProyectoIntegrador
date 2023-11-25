@@ -20,11 +20,11 @@ public class TipoProblema extends BaseEntity{
     @Column(name="tipo")
     private String tipo;
     @Column(name="tiempoEstimado(Dias)")
-    private Integer tiempoEnSDias;
+    private Integer tiempoEnDias;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "tipoProblema_especialidad",
+            name = "tipoproblema_especialidad",
             joinColumns = @JoinColumn(name = "tipoProblema_id"),
             inverseJoinColumns = @JoinColumn(name = "especialidad_id"))
      List<Especialidad> especialidades;

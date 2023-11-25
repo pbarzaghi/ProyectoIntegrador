@@ -3,6 +3,7 @@ package ar.programa.proyectointegrador.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.engine.spi.Mapping;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,7 +32,7 @@ public class Incidencia extends BaseEntity {
 
 
     @ManyToOne
-    @JoinColumn(name="cliente_id", referencedColumnName="id")
+
     private Cliente cliente;
 
     @ManyToOne

@@ -5,6 +5,7 @@ import ar.programa.proyectointegrador.entity.Especialidad;
 import ar.programa.proyectointegrador.entity.Incidencia;
 import ar.programa.proyectointegrador.entity.Tecnico;
 import ar.programa.proyectointegrador.service.EspecialidadService;
+import ar.programa.proyectointegrador.service.IncidenciaService;
 import ar.programa.proyectointegrador.service.TecnicoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +19,10 @@ public class TecnicoRestController {
     TecnicoService tecnicoService;
     @Autowired
     EspecialidadService especialidadService;
+
+    @Autowired
+    IncidenciaService incidenciaService;
+
     @PostMapping("/Tecnico")
     public Tecnico CreateTecnico(@Validated @RequestBody Map<String, Object> body) {
 
@@ -46,6 +51,22 @@ public class TecnicoRestController {
         }
 
         return "Fallo - No se agrego la especialidad al tecnico "+id;
+
+    }
+
+    @PutMapping("/Tecnicoincidencia/{id}")
+    public String updateTecnicoIncidencia(@Validated @RequestBody Map<String,Object> body,
+                                          @PathVariable("id") Integer id){
+        Tecnico tecnico=tecnicoService.findById(id).get();
+        if(tecnico != null){
+            String idIncidencia=String.valueOf(body.get("idIncidencia"));
+            Incidencia incidencia=  incidenciaService.findById(Integer.valueOf(idIncidencia)).get();
+            tecnico= tecnicoService.addIncidencia(tecnico,incidencia);
+            if(tecnico!=null)
+                return "OK - Incidencia "+ idIncidencia +" es agregado al tecnico "+id;
+        }
+
+        return "Fallo - No se agrego la incidencia al tecnico "+id;
 
     }
 }

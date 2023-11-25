@@ -33,7 +33,7 @@ public class Cliente extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "servicio_id"))
     List<Servicio> servicios;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     List<Incidencia> incidencias;
 
 
