@@ -82,4 +82,17 @@ public class TecnicoRestController {
 
     }
 
+    @GetMapping("/TecnicoConMasIncidentesResueltosNdiasEspecialidad/{id}")
+    public Tecnico getTecnicoConMasIncidentesResueltosEspecialidad(@Validated @RequestBody Map<String, Object> body,
+                                                       @PathVariable("id") Integer id) {
+
+
+        String nombreEspecialidad = String.valueOf(body.get("nombreEspecialidad"));
+        List<Tecnico> lista=tecnicoService.findTecnicosConMasIncidentesResueltosEnNDiasEspecialidad(id,nombreEspecialidad);
+        if(lista.size() !=0)
+            return lista.get(1);// el primer elemento de la lista es el que mas cantidad tiene
+        return null;
+
+    }
+
 }
