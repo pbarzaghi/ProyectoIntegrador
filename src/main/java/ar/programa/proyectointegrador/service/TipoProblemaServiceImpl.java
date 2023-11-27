@@ -57,6 +57,7 @@ public class TipoProblemaServiceImpl implements TipoProblemaService{
        if(!especialidadList.contains(especialidad)) {
            especialidadList.add(especialidad);
            tipoProblema.setEspecialidades(especialidadList);
+
            return tipoProblemaRepository.save(tipoProblema);
        }
        return null;
@@ -68,6 +69,7 @@ public class TipoProblemaServiceImpl implements TipoProblemaService{
         if(!incidenciaList.contains(incidencia)) {
             incidenciaList.add(incidencia);
             tipoProblema.setIncidencias(incidenciaList);
+            incidencia.setTipoProblema(tipoProblema);
             return tipoProblemaRepository.save(tipoProblema);
         }
         return null;

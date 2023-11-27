@@ -1,5 +1,7 @@
 package ar.programa.proyectointegrador.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,15 +25,16 @@ public class Tecnico extends BaseEntity{
     @Column(name="numTelefono")
     private String nroTel;
 
+    @JsonManagedReference
     @OneToMany
     List<Incidencia> incidencias;
-
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "tecnico_especialidad",
             joinColumns = @JoinColumn(name = "tecnico_id"),
             inverseJoinColumns = @JoinColumn(name = "especialidad_id"))
-    List<Especialidad> especialidad;
+    List<Especialidad> especialidades;
 
 
 }

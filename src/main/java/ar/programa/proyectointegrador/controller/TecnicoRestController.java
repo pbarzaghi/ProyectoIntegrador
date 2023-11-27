@@ -1,6 +1,6 @@
 package ar.programa.proyectointegrador.controller;
 
-import ar.programa.proyectointegrador.entity.Cliente;
+
 import ar.programa.proyectointegrador.entity.Especialidad;
 import ar.programa.proyectointegrador.entity.Incidencia;
 import ar.programa.proyectointegrador.entity.Tecnico;
@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,11 +27,11 @@ public class TecnicoRestController {
     @PostMapping("/Tecnico")
     public Tecnico CreateTecnico(@Validated @RequestBody Map<String, Object> body) {
 
-        String nombre= String.valueOf(body.get("nombre"));
-        String mail=String.valueOf(body.get("mail"));
-        String numTelefono=String.valueOf(body.get("numTelefono"));
+        String nombre = String.valueOf(body.get("nombre"));
+        String mail = String.valueOf(body.get("mail"));
+        String numTelefono = String.valueOf(body.get("numTelefono"));
 
-        Tecnico tecnico=new Tecnico();
+        Tecnico tecnico = new Tecnico();
         tecnico.setNombre(nombre);
         tecnico.setMail(mail);
         tecnico.setNroTel(numTelefono);
@@ -39,34 +40,46 @@ public class TecnicoRestController {
     }
 
     @PutMapping("/Tecnicoespecialidad/{id}")
-    public String updateTecnicoespecialidad(@Validated @RequestBody Map<String,Object> body,
-                                          @PathVariable("id") Integer id){
-        Tecnico tecnico=tecnicoService.findById(id).get();
-        if(tecnico != null){
-            String idEspecialidad=String.valueOf(body.get("idEspecialidad"));
+    public String updateTecnicoespecialidad(@Validated @RequestBody Map<String, Object> body,
+                                            @PathVariable("id") Integer id) {
+        Tecnico tecnico = tecnicoService.findById(id).get();
+        if (tecnico != null) {
+            String idEspecialidad = String.valueOf(body.get("idEspecialidad"));
             Especialidad especialidad = especialidadService.findById(Integer.valueOf(idEspecialidad)).get();
-           tecnico= tecnicoService.addEspecialidad(tecnico,especialidad);
-            if(tecnico!=null)
-                return "OK - Especialidad "+ idEspecialidad +" se agregado al tecnico "+id;
+            tecnico = tecnicoService.addEspecialidad(tecnico, especialidad);
+            if (tecnico != null)
+                return "OK - Especialidad " + idEspecialidad + " se agregado al tecnico " + id;
         }
 
-        return "Fallo - No se agrego la especialidad al tecnico "+id;
+        return "Fallo - No se agrego la especialidad al tecnico " + id;
 
     }
 
     @PutMapping("/Tecnicoincidencia/{id}")
-    public String updateTecnicoIncidencia(@Validated @RequestBody Map<String,Object> body,
-                                          @PathVariable("id") Integer id){
-        Tecnico tecnico=tecnicoService.findById(id).get();
-        if(tecnico != null){
-            String idIncidencia=String.valueOf(body.get("idIncidencia"));
-            Incidencia incidencia=  incidenciaService.findById(Integer.valueOf(idIncidencia)).get();
-            tecnico= tecnicoService.addIncidencia(tecnico,incidencia);
-            if(tecnico!=null)
-                return "OK - Incidencia "+ idIncidencia +" es agregado al tecnico "+id;
+    public String updateTecnicoIncidencia(@Validated @RequestBody Map<String, Object> body,
+                                          @PathVariable("id") Integer id) {
+        Tecnico tecnico = tecnicoService.findById(id).get();
+        if (tecnico != null) {
+            String idIncidencia = String.valueOf(body.get("idIncidencia"));
+            Incidencia incidencia = incidenciaService.findById(Integer.valueOf(idIncidencia)).get();
+            tecnico = tecnicoService.addIncidencia(tecnico, incidencia);
+            if (tecnico != null)
+                return "OK - Incidencia " + idIncidencia + " es agregado al tecnico " + id;
         }
 
-        return "Fallo - No se agrego la incidencia al tecnico "+id;
+        return "Fallo - No se agrego la incidencia al tecnico " + id;
 
     }
+
+    @GetMapping("/TecnicoConMasIncidentesResueltosNdias/{id}")
+    public Tecnico getTecnicoConMasIncidentesResueltos(@Validated @RequestBody Map<String, Object> body,
+                                                       @PathVariable("id") Integer id) {
+
+        List<Tecnico> lista=tecnicoService.findTecnicosConMasIncidentesResueltosEnNDias(id);
+        if(lista.size() !=0)
+          return lista.get(1);// el primer elemento de la lista es el que mas cantidad tiene
+        return null;
+
+    }
+
 }

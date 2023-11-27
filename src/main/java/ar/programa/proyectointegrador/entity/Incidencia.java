@@ -1,9 +1,10 @@
 package ar.programa.proyectointegrador.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.engine.spi.Mapping;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,19 +27,21 @@ public class Incidencia extends BaseEntity {
     @Column(name="resuelto")
     private Boolean resuelto;
 
-
+    @JsonIgnore
     @OneToMany
-    List<IncidenciaDetalle> incidenciaDetalles;
+    List<DetalleIncidencia> detalleincidencia;
 
-
+    @JsonIgnore
     @ManyToOne
 
     private Cliente cliente;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="tipoProblema_id", referencedColumnName="id")
     private  TipoProblema tipoProblema;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name="tecnico_id", referencedColumnName="id")
     private  Tecnico tecnico;

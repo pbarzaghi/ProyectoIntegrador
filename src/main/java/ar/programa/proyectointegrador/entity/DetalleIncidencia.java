@@ -11,7 +11,7 @@ import lombok.*;
 /**
  @author pabloBarzaghi
  */
-public class IncidenciaDetalle  extends BaseEntity{
+public class DetalleIncidencia extends BaseEntity{
 
 
 

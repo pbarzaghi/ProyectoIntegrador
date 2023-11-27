@@ -1,5 +1,6 @@
 package ar.programa.proyectointegrador.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,17 +14,18 @@ import java.util.List;
 /**
  @author pabloBarzaghi
  */
-public class Servicio extends BaseEntity{
+public class Servicio extends BaseEntity {
 
 
-    @Column(name="nombre")
+    @Column(name = "nombre")
     private String nombre;
 
+    @JsonManagedReference
     @ManyToMany(mappedBy = "servicios")
     List<Cliente> clientes;
 
     @OneToMany
-    List<IncidenciaDetalle> incidenciaDetalles;
+    List<DetalleIncidencia> detalleincidencia;
 
 
 }

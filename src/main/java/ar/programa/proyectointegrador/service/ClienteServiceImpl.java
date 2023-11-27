@@ -56,6 +56,7 @@ public class ClienteServiceImpl implements ClienteService{
       if(!listIncidencias.contains(incidencia)) {
           listIncidencias.add(incidencia);
           cliente.setIncidencias(listIncidencias);
+          incidencia.setCliente(cliente);
           return clienteRepository.save(cliente);
       }
      return null;

@@ -2,13 +2,20 @@ package ar.programa.proyectointegrador.service;
 
 import ar.programa.proyectointegrador.entity.Especialidad;
 import ar.programa.proyectointegrador.entity.Incidencia;
-import ar.programa.proyectointegrador.entity.Servicio;
+
 import ar.programa.proyectointegrador.entity.Tecnico;
 import ar.programa.proyectointegrador.repository.TecnicoRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
+import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 /**
@@ -18,6 +25,9 @@ import java.util.Optional;
 public class TecnicoServiceImpl implements TecnicoService{
     @Autowired
     TecnicoRepository tecnicoRepository;
+    @PersistenceContext
+    EntityManager entityManager;
+
     @Transactional
     @Override
     public List<Tecnico> findAll() {
@@ -57,6 +67,7 @@ public class TecnicoServiceImpl implements TecnicoService{
        if(!listIncidencias.contains(incidencia)) {
             listIncidencias.add(incidencia);
             tecnico.setIncidencias(listIncidencias);
+            incidencia.setTecnico(tecnico);
              return tecnicoRepository.save(tecnico);
         }
         return null;
@@ -64,14 +75,28 @@ public class TecnicoServiceImpl implements TecnicoService{
     @Transactional
     @Override
     public Tecnico addEspecialidad(Tecnico tecnico, Especialidad especialidad) {
-        List<Especialidad> listEspecialidades=tecnico.getEspecialidad();
+        List<Especialidad> listEspecialidades=tecnico.getEspecialidades();
         if(!listEspecialidades.contains(especialidad)) {
             listEspecialidades.add(especialidad);
-            tecnico.setEspecialidad(listEspecialidades);
+            tecnico.setEspecialidades(listEspecialidades);
+
             return tecnicoRepository.save(tecnico);
         }
 
      return null;
+    }
+
+
+
+    @Transactional
+    @Override
+    public List<Tecnico> findTecnicosConMasIncidentesResueltosEnNDias(Integer dias) {
+
+        // Calcular las fechas
+        LocalDateTime fechaFin = LocalDateTime.now();
+        LocalDateTime fechaInicio = fechaFin.minusDays(dias);
+
+        return tecnicoRepository.findAllTecnicosByIncidenciaResueltaEntreFechas(fechaInicio,fechaFin);
     }
 
 

@@ -1,5 +1,6 @@
 package ar.programa.proyectointegrador.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,11 +19,12 @@ public class Especialidad extends BaseEntity{
     @Column(name = "nombre")
     private String nombre;
 
+    @JsonManagedReference
     @ManyToMany(mappedBy = "especialidades")
     List<TipoProblema> tipoProblemas;
 
-
-    @ManyToMany(mappedBy = "especialidad")
+    @JsonManagedReference
+    @ManyToMany(mappedBy = "especialidades")
     List<Tecnico> tecnicos;
 
 }

@@ -1,5 +1,6 @@
 package ar.programa.proyectointegrador.service;
 
+import ar.programa.proyectointegrador.entity.DetalleIncidencia;
 import ar.programa.proyectointegrador.entity.Incidencia;
 import ar.programa.proyectointegrador.repository.IncidenciaReprository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,5 +43,21 @@ public class IncidenciaServiceImpl implements IncidenciaService{
     @Override
     public void deleteAll()  {
         incidenciaReprository.deleteAll();
+    }
+
+    @Override
+    public Incidencia addDetalleIncidencia(Incidencia incidencia, DetalleIncidencia detalleIncidencia) {
+        List<DetalleIncidencia> detalleIncidenciaList=incidencia.getDetalleincidencia();
+
+        if(! detalleIncidenciaList.contains(detalleIncidencia)) {
+            detalleIncidenciaList.add(detalleIncidencia);
+            incidencia.setDetalleincidencia(detalleIncidenciaList);
+            if( detalleIncidencia.getResuelto() == null)
+                detalleIncidencia.setResuelto(Boolean.FALSE);
+            incidencia.setResuelto(detalleIncidencia.getResuelto());
+            detalleIncidencia.setIncidencia(incidencia);
+            return incidenciaReprository.save(incidencia);
+        }
+        return null;
     }
 }

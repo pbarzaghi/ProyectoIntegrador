@@ -1,5 +1,6 @@
 package ar.programa.proyectointegrador.service;
 
+import ar.programa.proyectointegrador.entity.DetalleIncidencia;
 import ar.programa.proyectointegrador.entity.Servicio;
 import ar.programa.proyectointegrador.repository.ServicioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,5 +43,18 @@ public class ServicioServiceImpl implements ServicioService {
     @Override
     public void deleteAll()  {
         servicioRepository.deleteAll();
+    }
+
+    @Override
+    public Servicio addDetalleIncidencia(Servicio servicio, DetalleIncidencia detalleIncidencia) {
+        List<DetalleIncidencia> detalleIncidenciaList=servicio.getDetalleincidencia();
+
+        if(! detalleIncidenciaList.contains(detalleIncidencia)) {
+            detalleIncidenciaList.add(detalleIncidencia);
+            servicio.setDetalleincidencia(detalleIncidenciaList);
+            detalleIncidencia.setServicio(servicio);
+            return servicioRepository.save(servicio);
+        }
+        return null;
     }
 }
