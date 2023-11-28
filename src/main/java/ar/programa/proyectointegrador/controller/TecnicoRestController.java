@@ -1,6 +1,7 @@
 package ar.programa.proyectointegrador.controller;
 
 
+import ar.programa.proyectointegrador.dto.TecnicoDto;
 import ar.programa.proyectointegrador.entity.Especialidad;
 import ar.programa.proyectointegrador.entity.Incidencia;
 import ar.programa.proyectointegrador.entity.Tecnico;
@@ -11,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 public class TecnicoRestController {
@@ -24,22 +27,25 @@ public class TecnicoRestController {
     @Autowired
     IncidenciaService incidenciaService;
 
-    @PostMapping("/Tecnico")
-    public Tecnico CreateTecnico(@Validated @RequestBody Map<String, Object> body) {
+    @PostMapping("/tecnico")
+    public TecnicoDto CreateTecnico(@Validated @RequestBody Map<String, Object> body) {
 
         String nombre = String.valueOf(body.get("nombre"));
         String mail = String.valueOf(body.get("mail"));
         String numTelefono = String.valueOf(body.get("numTelefono"));
 
-        Tecnico tecnico = new Tecnico();
-        tecnico.setNombre(nombre);
-        tecnico.setMail(mail);
-        tecnico.setNroTel(numTelefono);
+        Tecnico tecnicoCreate = new Tecnico();
+        tecnicoCreate.setNombre(nombre);
+        tecnicoCreate.setMail(mail);
+        tecnicoCreate.setNroTel(numTelefono);
+        tecnicoCreate=tecnicoService.save(tecnicoCreate);
 
-        return tecnicoService.save(tecnico);
+        return TecnicoDto.builder().nombre(tecnicoCreate.getNombre())
+                .mail(tecnicoCreate.getMail())
+                .nroTel(tecnicoCreate.getNroTel()).build();
     }
 
-    @PutMapping("/Tecnicoespecialidad/{id}")
+    @PutMapping("/tecnicoEspecialidad/{id}")
     public String updateTecnicoespecialidad(@Validated @RequestBody Map<String, Object> body,
                                             @PathVariable("id") Integer id) {
         Tecnico tecnico = tecnicoService.findById(id).get();
@@ -55,7 +61,7 @@ public class TecnicoRestController {
 
     }
 
-    @PutMapping("/Tecnicoincidencia/{id}")
+    @PutMapping("/tecnicoIncidencia/{id}")
     public String updateTecnicoIncidencia(@Validated @RequestBody Map<String, Object> body,
                                           @PathVariable("id") Integer id) {
         Tecnico tecnico = tecnicoService.findById(id).get();
@@ -71,28 +77,75 @@ public class TecnicoRestController {
 
     }
 
-    @GetMapping("/TecnicoConMasIncidentesResueltosNdias/{id}")
+    @GetMapping("/tecnicoConMasIncidentesResueltosNdias/{id}")
     public Tecnico getTecnicoConMasIncidentesResueltos(@Validated @RequestBody Map<String, Object> body,
                                                        @PathVariable("id") Integer id) {
 
         List<Tecnico> lista=tecnicoService.findTecnicosConMasIncidentesResueltosEnNDias(id);
         if(lista.size() !=0)
-          return lista.get(1);// el primer elemento de la lista es el que mas cantidad tiene
+          return lista.get(0);// el primer elemento de la lista es el que mas cantidad tiene
         return null;
 
     }
 
-    @GetMapping("/TecnicoConMasIncidentesResueltosNdiasEspecialidad/{id}")
+    @GetMapping("/tecnicoConMasIncidentesResueltosNdiasEspecialidad/{id}")
     public Tecnico getTecnicoConMasIncidentesResueltosEspecialidad(@Validated @RequestBody Map<String, Object> body,
                                                        @PathVariable("id") Integer id) {
 
 
-        String nombreEspecialidad = String.valueOf(body.get("nombreEspecialidad"));
-        List<Tecnico> lista=tecnicoService.findTecnicosConMasIncidentesResueltosEnNDiasEspecialidad(id,nombreEspecialidad);
+        Integer idEsp = Integer.valueOf(String.valueOf(body.get("idEspecialidad")));
+
+        List<Tecnico> lista=tecnicoService.findTecnicosConMasIncidentesResueltosEnNDiasEspecialidad(id,idEsp);
         if(lista.size() !=0)
-            return lista.get(1);// el primer elemento de la lista es el que mas cantidad tiene
+            return lista.get(0);// el primer elemento de la lista es el que mas cantidad tiene
         return null;
 
     }
 
-}
+    //Update campos de tecnico
+    @PutMapping("/tecnico/{id}")
+    public TecnicoDto updateTecnico(@Validated @RequestBody Map<String, Object> body,
+                                    @PathVariable("id") Integer id) {
+
+        Tecnico tecnicoUpdate = tecnicoService.findById(id).get();
+        String nombre = String.valueOf(body.get("nombre"));
+        String mail = String.valueOf(body.get("mail"));
+        String numTelefono = String.valueOf(body.get("numTelefono"));
+        if(! nombre.isEmpty())
+            tecnicoUpdate.setNombre(nombre);
+        if (! mail.isEmpty())
+            tecnicoUpdate.setMail(mail);
+        if (! numTelefono.isEmpty())
+            tecnicoUpdate.setNroTel(numTelefono);
+       tecnicoUpdate= tecnicoService.update(tecnicoUpdate);
+
+       return TecnicoDto.builder().nombre(tecnicoUpdate.getNombre())
+                .mail(tecnicoUpdate.getMail())
+               .nroTel(tecnicoUpdate.getNroTel()).build();
+
+
+    }
+   // Listar
+   @GetMapping("/tecnicos")
+   public List<TecnicoDto> getAllTecnicos() {
+       List<Tecnico> tecnicoList = tecnicoService.findAll();
+
+       return tecnicoList.stream()
+               .map(t -> TecnicoDto.builder()
+                       .nombre(t.getNombre())
+                       .mail(t.getMail())
+                       .nroTel(t.getNroTel())
+                       .build())
+               .collect(Collectors.toList());
+   }
+
+
+   // Delete
+   @DeleteMapping("/tecnico/{id}")
+   public String deleteTecnicoById(@PathVariable("id") Integer id){
+       tecnicoService.deleteById(id);
+       return "Tecnico Eliminado correctamente";
+   }
+
+   }
+

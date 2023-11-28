@@ -1,16 +1,18 @@
 package ar.programa.proyectointegrador.controller;
 
-import ar.programa.proyectointegrador.entity.DetalleIncidencia;
-import ar.programa.proyectointegrador.entity.Incidencia;
-import ar.programa.proyectointegrador.entity.Servicio;
-import ar.programa.proyectointegrador.entity.Tecnico;
+import ar.programa.proyectointegrador.dto.ClienteDto;
+import ar.programa.proyectointegrador.dto.ServicioDto;
+import ar.programa.proyectointegrador.entity.*;
 import ar.programa.proyectointegrador.service.IncidenciaDetalleService;
 import ar.programa.proyectointegrador.service.ServicioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 @RestController
 public class ServicioRestController {
 
@@ -21,16 +23,16 @@ public class ServicioRestController {
     @Autowired
     private IncidenciaDetalleService incidenciaDetalleService;
     @PostMapping("/Servicio")
-    public Servicio CreateServicio(@Validated @RequestBody Map<String, Object> body) {
+    public ServicioDto CreateServicio(@Validated @RequestBody Map<String, Object> body) {
 
         String nombre= String.valueOf(body.get("nombre"));
 
 
-        Servicio servicio=new Servicio();
+        Servicio servicioCreate=new Servicio();
 
-        servicio.setNombre(nombre);
-
-        return  servicioService.save(servicio);
+        servicioCreate.setNombre(nombre);
+        servicioCreate= servicioService.save(servicioCreate);
+        return ServicioDto.builder().nombre(servicioCreate.getNombre()).build();
     }
 
     @PutMapping("/ServicioDetalleincidencia/{id}")
@@ -48,5 +50,41 @@ public class ServicioRestController {
         return "Fallo - No se agrego la Detalle de incidencia al servicio "+id;
 
     }
+
+    @PutMapping("/servicio/{id}")
+    public ServicioDto updateService(@Validated @RequestBody Map<String, Object> body,
+                                    @PathVariable("id") Integer id) {
+
+        Servicio servicioUpdate = servicioService.findById(id).get();
+        String nombre= String.valueOf(body.get("nombre"));
+
+        if(! nombre.isEmpty())
+            servicioUpdate.setNombre(nombre);
+
+        servicioUpdate= servicioService.update(servicioUpdate);
+
+        return ServicioDto.builder().nombre(servicioUpdate.getNombre()).build();
+
+
+
+    }
+
+    @GetMapping("/servicios")
+    public List<ServicioDto> getAllServicios() {
+        List<Servicio> servicioList = servicioService.findAll();
+
+        return servicioList.stream()
+                .map(t -> ServicioDto.builder()
+                        .nombre(t.getNombre())
+                       .build())
+                .collect(Collectors.toList());
+    }
+
+    @DeleteMapping("/servicio/{id}")
+    public String deleteServicioById(@PathVariable("id") Integer id){
+        servicioService.deleteById(id);
+        return "Servicio eliminado correctamente";
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package ar.programa.proyectointegrador.entity;
 
+import ar.programa.proyectointegrador.dto.TecnicoDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -35,6 +36,7 @@ public class Tecnico extends BaseEntity{
             joinColumns = @JoinColumn(name = "tecnico_id"),
             inverseJoinColumns = @JoinColumn(name = "especialidad_id"))
     List<Especialidad> especialidades;
+
 
 
 }

@@ -16,7 +16,7 @@ public interface TecnicoService extends CrudService<Tecnico,Integer> {
       public Tecnico addEspecialidad(Tecnico tecnico, Especialidad especialidad  );
 
       List<Tecnico> findTecnicosConMasIncidentesResueltosEnNDias(Integer dias);
-      List<Tecnico> findTecnicosConMasIncidentesResueltosEnNDiasEspecialidad(Integer dias,String name);
+      List<Tecnico> findTecnicosConMasIncidentesResueltosEnNDiasEspecialidad(Integer dias,Integer idEsp);
 
 
 

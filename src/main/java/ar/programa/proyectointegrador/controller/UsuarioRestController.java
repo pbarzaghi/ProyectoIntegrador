@@ -1,16 +1,20 @@
 package ar.programa.proyectointegrador.controller;
 
+import ar.programa.proyectointegrador.dto.ServicioDto;
+import ar.programa.proyectointegrador.dto.UsuarioDto;
+import ar.programa.proyectointegrador.entity.Servicio;
 import ar.programa.proyectointegrador.entity.TipoUsuario;
 import ar.programa.proyectointegrador.entity.Usuario;
 import ar.programa.proyectointegrador.service.TipoUsuarioService;
 import ar.programa.proyectointegrador.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 @RestController
 public class UsuarioRestController {
 
@@ -22,7 +26,7 @@ public class UsuarioRestController {
 
     // Create
     @PostMapping("/Usuario")
-    public Usuario createUsuario(@Validated @RequestBody Map<String, Object> body) {
+    public UsuarioDto createUsuario(@Validated @RequestBody Map<String, Object> body) {
 
 
         //LECTURA DE DATOS:
@@ -44,12 +48,66 @@ public class UsuarioRestController {
 
 
         TipoUsuario tipoUsuario = tipoUsuarioService.findById(nroTipoUsurio).get();
-        Usuario user = new Usuario();
-        user.setNombreUsuario(username);
-        user.setPass(password);
-        user.setTipousuario_id(tipoUsuario);
-        return usuarioService.save(user);
+        Usuario userCreate = new Usuario();
+        userCreate.setNombreUsuario(username);
+        userCreate.setPass(password);
+        userCreate.setTipousuario_id(tipoUsuario);
+        userCreate= usuarioService.save(userCreate);
+        return UsuarioDto.builder()
+                .nombreUsuario(userCreate.getNombreUsuario())
+                .pass(userCreate.getPass())
+                .tipousuario(userCreate.getTipousuario_id().getId())
+                .build();
+
+    }
+
+    //Todo: Delete Listar Update
+    @PutMapping("/usuario/{id}")
+    public UsuarioDto updateUsuario(@Validated @RequestBody Map<String, Object> body,
+                                     @PathVariable("id") Integer id) {
+
+        Usuario usuarioUpdate = usuarioService.findById(id).get();
+        String username = String.valueOf(body.get("username"));
+
+        //password
+        String password = String.valueOf(body.get("password"));
 
 
+        if(! username.isEmpty())
+            usuarioUpdate.setNombreUsuario(username);
+
+        if(! password.isEmpty())
+            usuarioUpdate.setPass(password);
+        usuarioUpdate= usuarioService.update(usuarioUpdate);
+
+
+        return UsuarioDto.builder()
+                .nombreUsuario(usuarioUpdate.getNombreUsuario())
+                .pass(usuarioUpdate.getPass())
+                .tipousuario(usuarioUpdate.getTipousuario_id().getId())
+                .build();
+
+
+
+    }
+
+    @GetMapping("/usuarios")
+    public List<UsuarioDto> getAllUsuarios() {
+        List<Usuario> usuarioList = usuarioService.findAll();
+
+        return usuarioList.stream()
+                .map(t -> UsuarioDto.builder()
+                        .nombreUsuario(t.getNombreUsuario())
+                        .pass(t.getPass())
+                        .tipousuario(t.getTipousuario_id().getId())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+
+    @DeleteMapping("/usuario/{id}")
+    public String deleteUsuarioById(@PathVariable("id") Integer id){
+        usuarioService.deleteById(id);
+        return "Usuario eliminado correctamente";
     }
 }

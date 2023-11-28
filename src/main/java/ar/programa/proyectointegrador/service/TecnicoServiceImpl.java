@@ -85,31 +85,30 @@ public class TecnicoServiceImpl implements TecnicoService{
 
      return null;
     }
-
-
-
     @Transactional
     @Override
     public List<Tecnico> findTecnicosConMasIncidentesResueltosEnNDias(Integer dias) {
-
         // Calcular las fechas
         LocalDateTime fechaFin = LocalDateTime.now();
         LocalDateTime fechaInicio = fechaFin.minusDays(dias);
 
         return tecnicoRepository.findAllTecnicosByIncidenciaResueltaEntreFechas(fechaInicio,fechaFin);
+
+
     }
+
+
 
 
     @Transactional
     @Override
-    public List<Tecnico> findTecnicosConMasIncidentesResueltosEnNDiasEspecialidad(Integer dias,String name) {
+    public List<Tecnico> findTecnicosConMasIncidentesResueltosEnNDiasEspecialidad(Integer dias,Integer idEsp) {
 
         // Calcular las fechas
+
         LocalDateTime fechaFin = LocalDateTime.now();
         LocalDateTime fechaInicio = fechaFin.minusDays(dias);
+        return tecnicoRepository.findAllTecnicosByIncidenciaResueltaEntreFechasEspecialidad(fechaInicio, fechaFin, idEsp);
 
-
-        return tecnicoRepository.findAllTecnicosByIncidenciaResueltaEntreFechasEspecialidad(fechaInicio,fechaFin,name);
     }
-
 }

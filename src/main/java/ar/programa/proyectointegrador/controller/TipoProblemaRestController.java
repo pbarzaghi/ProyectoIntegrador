@@ -1,5 +1,7 @@
 package ar.programa.proyectointegrador.controller;
 
+import ar.programa.proyectointegrador.dto.ServicioDto;
+import ar.programa.proyectointegrador.dto.TipoProblemaDto;
 import ar.programa.proyectointegrador.entity.*;
 import ar.programa.proyectointegrador.service.EspecialidadService;
 import ar.programa.proyectointegrador.service.IncidenciaService;
@@ -9,7 +11,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.w3c.dom.stylesheets.LinkStyle;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 public class TipoProblemaRestController {
@@ -21,16 +25,20 @@ public class TipoProblemaRestController {
     @Autowired
     IncidenciaService incidenciaService;
 
-    @PostMapping("/Tipoproblema")
-    public TipoProblema CreateTipoproblema(@Validated @RequestBody Map<String, Object> body) {
+    @PostMapping("/tipoproblema")
+    public TipoProblemaDto CreateTipoproblema(@Validated @RequestBody Map<String, Object> body) {
 
         String tiempoEstimado= String.valueOf(body.get("tiempoEstimado"));
         String tipo=String.valueOf(body.get("tipo"));
 
-        TipoProblema tipoProblema=new TipoProblema();
-        tipoProblema.setTiempoEnDias(Integer.valueOf(tiempoEstimado));
-        tipoProblema.setTipo(tipo);
-        return tipoProblemaService.save(tipoProblema);
+        TipoProblema tipoProblemaCreate=new TipoProblema();
+        tipoProblemaCreate.setTiempoEnDias(Integer.valueOf(tiempoEstimado));
+        tipoProblemaCreate.setTipo(tipo);
+        tipoProblemaCreate =tipoProblemaService.save(tipoProblemaCreate);
+        return TipoProblemaDto.builder()
+                .tipo(tipoProblemaCreate.getTipo())
+                .tiempoEnDias(tipoProblemaCreate.getTiempoEnDias())
+                .build();
 
     }
 
@@ -67,6 +75,50 @@ public class TipoProblemaRestController {
 
         return "Fallo - No se agrego la incidencia al tipo de problema "+id;
 
+    }
+
+    //TODO Delete , Modicar, Listar
+    @PutMapping("/tipoproblema/{id}")
+    public TipoProblemaDto updateTipoproblema(@Validated @RequestBody Map<String, Object> body,
+                                     @PathVariable("id") Integer id) {
+
+        TipoProblema tipoProblemaUpdate = tipoProblemaService.findById(id).get();
+        String tiempoEstimado= String.valueOf(body.get("tiempoEstimado"));
+        String tipo=String.valueOf(body.get("tipo"));
+
+        if(! tipo.isEmpty())
+            tipoProblemaUpdate.setTipo(tipo);
+
+        if(! tiempoEstimado.isEmpty())
+            tipoProblemaUpdate.setTiempoEnDias(Integer.valueOf(tiempoEstimado));
+
+        tipoProblemaUpdate= tipoProblemaService.update(tipoProblemaUpdate);
+
+        return TipoProblemaDto.builder()
+                        .tipo(tipoProblemaUpdate.getTipo())
+                                .tiempoEnDias(tipoProblemaUpdate.getTiempoEnDias())
+                                .build();
+
+
+
+    }
+
+
+    @GetMapping("/tipoproblemas")
+    public List<TipoProblemaDto> getAllTipoProblemas() {
+        List<TipoProblema> tipoProblemaList = tipoProblemaService.findAll();
+
+        return tipoProblemaList.stream()
+                .map(t -> TipoProblemaDto.builder()
+                        .tipo(t.getTipo())
+                        .tiempoEnDias(t.getTiempoEnDias())
+                        .build())
+                .collect(Collectors.toList());
+    }
+    @DeleteMapping("/tipoproblema/{id}")
+    public String deleteTipoProblemaById(@PathVariable("id") Integer id){
+        tipoProblemaService.deleteById(id);
+        return "Tipo de problema fue eliminado correctamente";
     }
 
 

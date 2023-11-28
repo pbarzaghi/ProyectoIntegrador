@@ -1,5 +1,7 @@
 package ar.programa.proyectointegrador.controller;
 
+import ar.programa.proyectointegrador.dto.IncidenciaDto;
+
 import ar.programa.proyectointegrador.entity.DetalleIncidencia;
 import ar.programa.proyectointegrador.entity.Incidencia;
 
@@ -8,11 +10,11 @@ import ar.programa.proyectointegrador.service.IncidenciaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 public class IncidenciaRestController {
@@ -23,25 +25,29 @@ public class IncidenciaRestController {
     @Autowired
     private IncidenciaDetalleService incidenciaDetalleService;
 
-    @PostMapping("/Incidencia")
-    public Incidencia CreateIncidencia(@Validated @RequestBody Map<String, Object> body) {
+    @PostMapping("/incidencia")
+    public IncidenciaDto CreateIncidencia(@Validated @RequestBody Map<String, Object> body) {
 
         String alias= String.valueOf(body.get("alias"));
         String descripcion= String.valueOf(body.get("descripcion"));
         String fechaestimada= String.valueOf(body.get("fechaestimada"));
         Boolean resuelto=  Boolean.valueOf((String) body.get("resuelto"));
 
-        Incidencia incidencia=new Incidencia();
-        incidencia.setAlias(alias);
+        Incidencia incidenciaCreate=new Incidencia();
+        incidenciaCreate.setAlias(alias);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        incidencia.setDescripcion(descripcion);
         LocalDateTime fecha= LocalDateTime.parse(fechaestimada,formatter);
-        incidencia.setFechaEstimada(fecha);
+        incidenciaCreate .setDescripcion(descripcion);
+
+        incidenciaCreate.setFechaEstimada( LocalDateTime.parse(fechaestimada,formatter));
         if(resuelto)
-        incidencia.setResuelto(Boolean.TRUE );
+        incidenciaCreate.setResuelto(Boolean.TRUE );
         else
-            incidencia.setResuelto(Boolean.FALSE);
-       return  incidenciaService.save(incidencia);
+            incidenciaCreate.setResuelto(Boolean.FALSE);
+        incidenciaCreate=incidenciaService.save(incidenciaCreate);
+        return IncidenciaDto.builder().alias(incidenciaCreate.getAlias())
+                .descripcion(incidenciaCreate.getDescripcion())
+                .fechaEstimada(incidenciaCreate.getFechaEstimada()).build();
     }
 
     @PutMapping("/IncidenciaDetalleincidencia/{id}")
@@ -58,6 +64,58 @@ public class IncidenciaRestController {
 
         return "Fallo - No se agrego la Detalle de incidencia al Incidente "+id;
 
+    }
+
+    @PutMapping("/incidencia/{id}")
+    public IncidenciaDto updateIncidencia(@Validated @RequestBody Map<String, Object> body,
+                                               @PathVariable("id") Integer id) {
+
+        Incidencia incidenciaUpdate = incidenciaService.findById(id).get();
+        String alias= String.valueOf(body.get("alias"));
+        String descripcion= String.valueOf(body.get("descripcion"));
+        String fechaestimada= String.valueOf(body.get("fechaestimada"));
+        String strResuelto=String.valueOf(body.get("resuelto"));
+      //  Boolean resuelto=  Boolean.valueOf((String) body.get("resuelto"));
+
+        if(! alias.isEmpty())
+            incidenciaUpdate.setAlias(alias);
+        if (! descripcion.isEmpty())
+           incidenciaUpdate.setDescripcion(descripcion);
+        if (! fechaestimada.isEmpty()) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            incidenciaUpdate.setFechaEstimada(LocalDateTime.parse(fechaestimada,formatter));
+        }
+        if (! strResuelto.isEmpty() )
+            incidenciaUpdate.setResuelto(Boolean.valueOf(strResuelto));
+
+
+        return IncidenciaDto.builder().alias(incidenciaUpdate.getAlias())
+                .descripcion(incidenciaUpdate.getDescripcion())
+                .fechaEstimada(incidenciaUpdate.getFechaEstimada()).build();
+
+
+    }
+    // Listar
+    @GetMapping("/incidencias")
+    public List<IncidenciaDto> getAllIncidencias() {
+        List<Incidencia> incidenciaList = incidenciaService.findAll();
+
+        return incidenciaList.stream()
+                .map(t ->IncidenciaDto.builder()
+                        .alias(t.getAlias())
+                        .descripcion(t.getDescripcion())
+                        .fechaEstimada(t.getFechaEstimada())
+                        .resuelto(t.getResuelto())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+
+    // Delete
+    @DeleteMapping("/incidencia/{id}")
+    public String deleteIncidenciaoById(@PathVariable("id") Integer id){
+        incidenciaService.deleteById(id);
+        return "Incidencia eliminada correctamente";
     }
 
 }

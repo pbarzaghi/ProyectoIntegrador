@@ -1,10 +1,12 @@
 package ar.programa.proyectointegrador.repository;
 
+import ar.programa.proyectointegrador.entity.Especialidad;
 import ar.programa.proyectointegrador.entity.Tecnico;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,21 +19,20 @@ import java.util.List;
  */
 @Repository
 @Transactional
+@EnableJpaRepositories
 public interface TecnicoRepository extends JpaRepository<Tecnico,Integer> {
 
    /* QRY  Quien fue el tecnico con mas incidentes resueltos  en los ultimos N dias
     */
-   @Query (" SELECT t FROM Tecnico as t "+
-               " JOIN ( SELECT i.tecnico, COUNT( i.tecnico) AS cantidad "+
-                  " FROM Incidencia as i"+
-                 " WHERE i.resuelto = TRUE "+
-                " AND i.fechaestimada BETWEEN :fechaInicio AND :fechaFin "+
-               " GROUP BY i.tecnico ORDER BY cantidad DESC) "+
-             " ON t.id = i.tecnico" )
 
+    @Query("SELECT t FROM Tecnico as t "+
+          " WHERE t.id = ( SELECT i.tecnico.id  FROM Incidencia i "+
+                           " WHERE i.resuelto=TRUE "+
+                             " AND i.fechaEstimada  BETWEEN :fechaInicio AND :fechaFin "+
+                             " GROUP BY  i.tecnico.id ORDER BY  COUNT(i.id) DESC LIMIT 1 )")
 
-    //@Query( " SELECT  t FROM Tecnico  t")
-    public List<Tecnico> findAllTecnicosByIncidenciaResueltaEntreFechas(@Param("fechaInicio") LocalDateTime fechaInicio,
+   // @Query("Select t from Tecnico as t")
+  public List<Tecnico> findAllTecnicosByIncidenciaResueltaEntreFechas(@Param("fechaInicio") LocalDateTime fechaInicio,
                                                                         @Param("fechaFin")LocalDateTime fechaFin);
 
 
@@ -39,25 +40,31 @@ public interface TecnicoRepository extends JpaRepository<Tecnico,Integer> {
      /*  QRY  Quien fue el tecnico con mas incidentes resueltos de una determinada
               especialidad en los ultimos N dias
 
-     SELECT t.*
-FROM Tecnico t
-JOIN (
-  SELECT TE.tecnico_id
-  FROM tecnico_especialidad TE
-  WHERE TE.especialidad_id IN (SELECT ID FROM ESPECIALIDAD WHERE NOMBRE = 'SAP')
-) AS TE ON t.id = TE.tecnico_id
-JOIN (
-  SELECT i.tecnico_id, COUNT(i.tecnico_id) AS cantidad
-  FROM Incidencia i
-  WHERE i.resuelto = TRUE
-  GROUP BY i.tecnico_id
-) AS i ON t.id = i.tecnico_id
-ORDER BY i.cantidad DESC;
-      */
+     */
 
-    @Query( " Select t from Tecnico  t")  //qry para que no tiree error
-    public List<Tecnico> findAllTecnicosByIncidenciaResueltaEntreFechasEspecialidad(@Param("fechaInicio") LocalDateTime fechaInicio,
+    @Query(value="SELECT * FROM Tecnico t " +
+            "WHERE t.id in ( " +
+            "  SELECT i.tecnico_id " +
+            "  FROM Incidencia i " +
+            "  WHERE i.resuelto = TRUE " +
+            " AND i.fecha_Estimada  BETWEEN :fechaInicio AND :fechaFin "+
+            "        and i.tecnico_id in( select tt.tecnico_id from tecnico_especialidad tt" +
+                                        "   where tt.especialidad_id=:idEsp) " +
+            "  GROUP BY i.tecnico_id " +
+            "  ORDER BY COUNT(i.id) DESC " +
+            ")",
+            nativeQuery = true)
+        /*    " SELECT t FROM Tecnico t "+
+                    " WHERE t.id = ( "+
+                    "  SELECT i.tecnico.id "+
+                    " FROM Incidencia i "+
+                    " WHERE i.resuelto = TRUE "+
+                    " AND i.fechaEstimada BETWEEN :fechaInicio AND :fechaFin "+
+                                   //     "  AND :objEspecialidad MEMBER OF i.tecnico.especialidades "+
+                    " GROUP BY i.tecnico.id "+
+                    " ORDER BY COUNT(i.id) DESC )")*/
+     public List<Tecnico> findAllTecnicosByIncidenciaResueltaEntreFechasEspecialidad(@Param("fechaInicio") LocalDateTime fechaInicio,
                                                                         @Param("fechaFin") LocalDateTime fechaFin,
-                                                                         @Param("nombreEsp") String nombreEsp);
+                                                                         @Param("idEsp") Integer idEsp);
 
 }
