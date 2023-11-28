@@ -1,9 +1,6 @@
 package ar.programa.proyectointegrador.repository;
 
-import ar.programa.proyectointegrador.entity.Especialidad;
 import ar.programa.proyectointegrador.entity.Tecnico;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -54,17 +51,28 @@ public interface TecnicoRepository extends JpaRepository<Tecnico,Integer> {
             "  ORDER BY COUNT(i.id) DESC " +
             ")",
             nativeQuery = true)
-        /*    " SELECT t FROM Tecnico t "+
-                    " WHERE t.id = ( "+
-                    "  SELECT i.tecnico.id "+
-                    " FROM Incidencia i "+
-                    " WHERE i.resuelto = TRUE "+
-                    " AND i.fechaEstimada BETWEEN :fechaInicio AND :fechaFin "+
-                                   //     "  AND :objEspecialidad MEMBER OF i.tecnico.especialidades "+
-                    " GROUP BY i.tecnico.id "+
-                    " ORDER BY COUNT(i.id) DESC )")*/
+
      public List<Tecnico> findAllTecnicosByIncidenciaResueltaEntreFechasEspecialidad(@Param("fechaInicio") LocalDateTime fechaInicio,
                                                                         @Param("fechaFin") LocalDateTime fechaFin,
                                                                          @Param("idEsp") Integer idEsp);
 
+
+  @Query(value = "SELECT " +
+         " t.id, t.nombre,t.mail,t.num_telefono,"+
+         " MIN(tp.tiempo_estimado_dias) as  tiempo_estimado_dias "+
+          " FROM " +
+          " tecnico t" +
+          " JOIN " +
+          " incidencia i ON t.id = i.tecnico_id " +
+          " JOIN" +
+          " tipoproblema tp ON i.tipo_problema_id = tp.id " +
+          " WHERE " +
+          " i.resuelto = TRUE " +
+          " GROUP BY " +
+          "  t.id, t.nombre " +
+          " ORDER BY " +
+          " tiempo_estimado_dias ASC " ,
+            nativeQuery = true)
+
+    public List<Tecnico> findTecnicoMasRapidoResolvioLaIncidencia() ;
 }

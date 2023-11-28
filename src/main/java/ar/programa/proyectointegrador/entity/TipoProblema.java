@@ -19,7 +19,7 @@ public class TipoProblema extends BaseEntity{
 
     @Column(name="tipo")
     private String tipo;
-    @Column(name="tiempoEstimado(Dias)")
+    @Column(name="tiempoEstimadoDias")
     private Integer tiempoEnDias;
 
     @ManyToMany(fetch = FetchType.LAZY)

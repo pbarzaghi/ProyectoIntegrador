@@ -77,30 +77,6 @@ public class TecnicoRestController {
 
     }
 
-    @GetMapping("/tecnicoConMasIncidentesResueltosNdias/{id}")
-    public Tecnico getTecnicoConMasIncidentesResueltos(@Validated @RequestBody Map<String, Object> body,
-                                                       @PathVariable("id") Integer id) {
-
-        List<Tecnico> lista=tecnicoService.findTecnicosConMasIncidentesResueltosEnNDias(id);
-        if(lista.size() !=0)
-          return lista.get(0);// el primer elemento de la lista es el que mas cantidad tiene
-        return null;
-
-    }
-
-    @GetMapping("/tecnicoConMasIncidentesResueltosNdiasEspecialidad/{id}")
-    public Tecnico getTecnicoConMasIncidentesResueltosEspecialidad(@Validated @RequestBody Map<String, Object> body,
-                                                       @PathVariable("id") Integer id) {
-
-
-        Integer idEsp = Integer.valueOf(String.valueOf(body.get("idEspecialidad")));
-
-        List<Tecnico> lista=tecnicoService.findTecnicosConMasIncidentesResueltosEnNDiasEspecialidad(id,idEsp);
-        if(lista.size() !=0)
-            return lista.get(0);// el primer elemento de la lista es el que mas cantidad tiene
-        return null;
-
-    }
 
     //Update campos de tecnico
     @PutMapping("/tecnico/{id}")

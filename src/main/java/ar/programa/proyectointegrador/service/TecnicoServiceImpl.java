@@ -8,7 +8,6 @@ import ar.programa.proyectointegrador.repository.TecnicoRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
-import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -111,4 +110,10 @@ public class TecnicoServiceImpl implements TecnicoService{
         return tecnicoRepository.findAllTecnicosByIncidenciaResueltaEntreFechasEspecialidad(fechaInicio, fechaFin, idEsp);
 
     }
+
+    @Override
+    public List<Tecnico> findTecnicoMasRapidoResolvioLaIncidencia() {
+        return tecnicoRepository.findTecnicoMasRapidoResolvioLaIncidencia();
+    }
+
 }
