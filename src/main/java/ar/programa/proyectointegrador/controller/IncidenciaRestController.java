@@ -31,7 +31,7 @@ public class IncidenciaRestController {
         String alias= String.valueOf(body.get("alias"));
         String descripcion= String.valueOf(body.get("descripcion"));
         String fechaestimada= String.valueOf(body.get("fechaestimada"));
-        Boolean resuelto=  Boolean.valueOf((String) body.get("resuelto"));
+        String strResuelto=  String.valueOf(body.get("resuelto"));
 
         Incidencia incidenciaCreate=new Incidencia();
         incidenciaCreate.setAlias(alias);
@@ -40,14 +40,17 @@ public class IncidenciaRestController {
         incidenciaCreate .setDescripcion(descripcion);
 
         incidenciaCreate.setFechaEstimada( LocalDateTime.parse(fechaestimada,formatter));
-        if(resuelto)
-        incidenciaCreate.setResuelto(Boolean.TRUE );
+        if ("TRUE".equals(strResuelto))
+           incidenciaCreate.setResuelto(Boolean.TRUE );
         else
-            incidenciaCreate.setResuelto(Boolean.FALSE);
+             incidenciaCreate.setResuelto(Boolean.FALSE);
+
         incidenciaCreate=incidenciaService.save(incidenciaCreate);
         return IncidenciaDto.builder().alias(incidenciaCreate.getAlias())
                 .descripcion(incidenciaCreate.getDescripcion())
-                .fechaEstimada(incidenciaCreate.getFechaEstimada()).build();
+                .fechaEstimada(incidenciaCreate.getFechaEstimada())
+                .resuelto(incidenciaCreate.getResuelto())
+                .build();
     }
 
     @PutMapping("/IncidenciaDetalleincidencia/{id}")
@@ -91,7 +94,9 @@ public class IncidenciaRestController {
 
         return IncidenciaDto.builder().alias(incidenciaUpdate.getAlias())
                 .descripcion(incidenciaUpdate.getDescripcion())
-                .fechaEstimada(incidenciaUpdate.getFechaEstimada()).build();
+                .fechaEstimada(incidenciaUpdate.getFechaEstimada())
+                .resuelto(incidenciaUpdate.getResuelto())
+                .build();
 
 
     }

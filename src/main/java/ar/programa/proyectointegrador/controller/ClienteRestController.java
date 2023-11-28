@@ -83,13 +83,17 @@ public class ClienteRestController {
         String razonSocial= String.valueOf(body.get("razonSocial"));
         String cuit=String.valueOf(body.get("cuit"));
         String mail=String.valueOf(body.get("mail"));
-        if(! razonSocial.isEmpty())
-            clienteUpdate.setRazonSocial(razonSocial);
-        if (! mail.isEmpty())
-            clienteUpdate.setMail(mail);
+
+        if( ! razonSocial.isEmpty() )
+             clienteUpdate.setRazonSocial(razonSocial);
+        if (! mail.isEmpty() )
+            clienteUpdate.setMail(mail) ;
         if (! cuit.isEmpty())
-            clienteUpdate.setCuit(cuit);
-        clienteUpdate= clienteService.update(clienteUpdate);
+             clienteUpdate.setCuit(cuit);
+
+
+
+        clienteUpdate=clienteService.update(clienteUpdate);
 
         return ClienteDto.builder().razonSocial(clienteUpdate.getRazonSocial())
                 .mail(clienteUpdate.getMail())
