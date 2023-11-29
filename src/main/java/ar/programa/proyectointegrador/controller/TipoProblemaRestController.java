@@ -77,7 +77,6 @@ public class TipoProblemaRestController {
 
     }
 
-    //TODO Delete , Modicar, Listar
     @PutMapping("/tipoproblema/{id}")
     public TipoProblemaDto updateTipoproblema(@Validated @RequestBody Map<String, Object> body,
                                      @PathVariable("id") Integer id) {

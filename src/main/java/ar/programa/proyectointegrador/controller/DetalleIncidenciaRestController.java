@@ -20,7 +20,7 @@ public class DetalleIncidenciaRestController {
     @Autowired
     IncidenciaDetalleService incidenciaDetalleService;
 
-    @PostMapping("/DetalleIncidencia")
+    @PostMapping("/detalleIncidencia")
     public  DetalleIncidenciaDto CreateDetalleIncidencia(@Validated @RequestBody Map<String, Object> body) {
 
         String descripcionProblema= String.valueOf(body.get("descripcionProblema"));
@@ -69,7 +69,6 @@ public class DetalleIncidenciaRestController {
 
     }
 
-    // TODO: ELIMINAR , MODIFICAR LISTAR
     @GetMapping("/detalleIncidencias")
     public List<DetalleIncidenciaDto> getAllDetalleIncidencias() {
         List<DetalleIncidencia> detalleIncidenciaList = incidenciaDetalleService.findAll();

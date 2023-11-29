@@ -22,7 +22,7 @@ public class ServicioRestController {
 
     @Autowired
     private IncidenciaDetalleService incidenciaDetalleService;
-    @PostMapping("/Servicio")
+    @PostMapping("/servicio")
     public ServicioDto CreateServicio(@Validated @RequestBody Map<String, Object> body) {
 
         String nombre= String.valueOf(body.get("nombre"));
@@ -35,7 +35,7 @@ public class ServicioRestController {
         return ServicioDto.builder().nombre(servicioCreate.getNombre()).build();
     }
 
-    @PutMapping("/ServicioDetalleincidencia/{id}")
+    @PutMapping("/servicioDetalleincidencia/{id}")
     public String updateServicioDetalleIncidencia(@Validated @RequestBody Map<String,Object> body,
                                           @PathVariable("id") Integer id){
         Servicio servicio=servicioService.findById(id).get();

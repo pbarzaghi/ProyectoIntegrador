@@ -53,7 +53,7 @@ public class IncidenciaRestController {
                 .build();
     }
 
-    @PutMapping("/IncidenciaDetalleincidencia/{id}")
+    @PutMapping("/incidenciaDetalleIncidencia/{id}")
     public String updateIncidenciaoDetalleIncidencia(@Validated @RequestBody Map<String,Object> body,
                                                   @PathVariable("id") Integer id){
         Incidencia incidencia=incidenciaService.findById(id).get();

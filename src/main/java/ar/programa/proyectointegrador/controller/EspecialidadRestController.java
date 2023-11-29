@@ -19,7 +19,7 @@ public class EspecialidadRestController {
     @Autowired
     EspecialidadService especialidadService;
 
-    @PostMapping("/Especialidad")
+    @PostMapping("/especialidad")
     public Especialidad CreateEspecialidad(@Validated @RequestBody Map<String, Object> body) {
 
         String nombre= String.valueOf(body.get("nombre"));
